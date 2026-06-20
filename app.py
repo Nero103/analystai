@@ -2,21 +2,48 @@ import streamlit as st
 import pandas as pd
 import ollama
 
-def analyze_text(text):
+def analyze_text(df, user_question):
     prompt = f"""
-    You are a senior business analyst.
+    You are a senior data analyst working for a Fortune 500 company.
 
-    Analyze the information below and provide:
+    Your job is to analyze datasets and produce executve-level summaries.
 
-    1. Executive summary
-    2. Key findings
-    3. Risks
-    4. Opportunities
-    5. Recommended next steps
+    RULES:
+    - Be precise and data-driven
+    - Do NOT guess missing information
+    - Focus on patterns, anomalies, and explanations
+    - Prioritize business impact over statistics
+    - Write clear for executives (non-technical audience)
+    - Do NOT sound stuffy
 
-    Information:
+    Rows: {len(df)}
+    Columns: {len(df.columns)}
+    
+    Column names: 
+    {list(df.columns)}
+    
+    Data types: 
+    {df.dtypes.to_string()}
 
-    {text}
+    Missing Values: 
+    {df.isnull().sum().to_string()}
+
+    First 10 rows: 
+    {df.head(10).to_string()}
+
+    Summary Statistics:
+    {df.describe(include="all").to_string()}
+
+    User Question:
+    {user_question}
+
+    OUTPUT FORMAT:
+
+    1. Executive Answer (direct response to question)
+    2. Key Insights (bullet points)
+    3. Data Evidence (what supports your answer)
+    4. Risks / Concerns
+    5. Recommended Next Actions
     """
 
     try:
@@ -36,12 +63,6 @@ def analyze_text(text):
         return f"AI analysis failed. Error: {e}"
 
 
-
-##if api_key:
-##    print("Api key loaded successfully!")
-##else:
-##    print("Api key NOT found")
-
 st.title("AnalystAI")
 st.write("Upload a PDF or CSV and get an analyst styled brief.")
 
@@ -59,21 +80,22 @@ if uploaded_file is not None:
         st.subheader("CSV Preview")
         st.dataframe(df.head())
 
-        csv_summary = f"""
 
-        Rows: {len(df)}
-        Columns: {len(df.columns)}
-        Column names: {list(df.columns)}
-
-        Missing Values: {df.isnull().sum().to_string()}
-
-        Summary Statistics:
-        {df.describe(include="all").to_string()}
-        """
+        user_question = st.text_input(
+            "Ask a question about the data",
+            placeholder = "Example: what stands out in this dataset?"
+        )
 
         if st.button("Generate Analyst Brief"):
             with st.spinner("Analyze data..."):
-                brief = analyze_text(csv_summary)
+                
+                question = (
+                    user_question 
+                    if user_question 
+                    else "What stands out in this dataset?"
+                )
+
+                brief = analyze_text(df, question)
 
             st.subheader("Analyze Brief")
             st.write(brief)
