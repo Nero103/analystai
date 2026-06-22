@@ -64,13 +64,23 @@ def analyze_text(df, user_question):
 
 
 st.title("AnalystAI")
-st.write("Upload a PDF or CSV and get an analyst styled brief.")
+## st.write("Upload a PDF or CSV and get an analyst styled brief.")
 
-uploaded_file = st.file_uploader(
-    "Choose a file",
-    type = ["pdf", "csv"]
-)
+# Sidebar for input
+with st.sidebar:
+    st.header("Controls")
 
+    uploaded_file = st.file_uploader(
+        "Upload CSV",
+        type = ["csv"]
+    )
+
+    user_question = st.text_input(
+            "Ask a question about the data",
+            placeholder = "Example: what stands out in this dataset?"
+    )
+
+# Main area
 if uploaded_file is not None:
     st.success(f"Uploaded: {uploaded_file.name}")
 
@@ -79,12 +89,6 @@ if uploaded_file is not None:
 
         st.subheader("CSV Preview")
         st.dataframe(df.head())
-
-
-        user_question = st.text_input(
-            "Ask a question about the data",
-            placeholder = "Example: what stands out in this dataset?"
-        )
 
         if st.button("Generate Analyst Brief"):
             with st.spinner("Analyze data..."):
@@ -97,7 +101,17 @@ if uploaded_file is not None:
 
                 brief = analyze_text(df, question)
 
-            st.subheader("Analyze Brief")
+            st.subheader("Analysis Brief")
             st.write(brief)
+
+            st.download_button(
+                label = "Download Analysis Brief",
+                data = brief,
+                file_name = "analystai_brief.txt",
+                mime = "text/plain"
+            )
+else:
+    st.info("Upload csv file to begin analysis.")
+
 
 
