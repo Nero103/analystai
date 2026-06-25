@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import ollama
 
+# Configuration
+MODEL = "phi3:mini"
+
+# Function
 def analyze_text(df, user_question):
     prompt = f"""
     You are a senior data analyst working for a Fortune 500 company.
@@ -48,7 +52,7 @@ def analyze_text(df, user_question):
 
     try:
         response = ollama.chat(
-            model = "qwen2.5:0.5b",
+            model = MODEL,
             messages = [
                 {
                     "role": "user",
