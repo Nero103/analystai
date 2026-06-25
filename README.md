@@ -20,7 +20,7 @@ It allows users to upload datasets, ask questions in natural language, and recei
 - Streamlit (UI)
 - Pandas (data processing)
 - Ollama (local LLM inference)
-- Qwen2.5 model (lightweight local model)
+- Phi3:mini model (lightweight local model)
 
 ## How It Works
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 ### 4. Install and run Ollama
 Download Ollama then install the model
 ```bash
-ollama pull qwen2.5:0.5b
+ollama pull phi3:mini
 ```
 
 ### 5. Run the App
