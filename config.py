@@ -1,0 +1,2 @@
+MODEL = "qwen2.5:1.5b"
+PDF_LIMIT = 8000
