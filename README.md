@@ -1,5 +1,5 @@
 # AnalystAI
-<img width="1918" height="517" alt="image" src="https://github.com/user-attachments/assets/5e5dfcb6-bf85-441d-be02-4b0323f260be" />
+<img width="1918" height="867" alt="Screenshot 2026-07-03 181630" src="https://github.com/user-attachments/assets/0c2d1d7b-6d79-4493-8f3a-15d891cec123" />
 
 AnalystAI is a local AI-powered data analysis tool that transforms CSV files into structured business insights using Streamlit and Ollama.
 
@@ -30,7 +30,13 @@ It allows users to upload datasets, ask questions in natural language, and recei
 4. AI generates a structured analyst report
 5. User can download the final report
 
-<img width="1901" height="760" alt="image" src="https://github.com/user-attachments/assets/7edc3f90-20db-41db-898c-6eb9645fbf6e" />
+1. Upload a PDF
+2. Document is processed using PdfReader
+3. Summary + metadata is sent to a local AI model (Ollama)
+4. AI generates a structured 8000 limit preview
+5. User can download the full final report
+
+<img width="1918" height="867" alt="Screenshot 2026-07-03 181655" src="https://github.com/user-attachments/assets/e3e57677-06e7-4710-a2bd-a6b73e957470" />
 
 ## Installation & Setup
 
