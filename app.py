@@ -8,13 +8,31 @@ from config import MODEL, PDF_LIMIT
 # UI
 # ------------------
 
-st.title("AnalystAI")
-## st.write("Upload a PDF or CSV and get an analyst styled brief.")
+st.title("📊 AnalystAI")
+st.caption("AI-Powered Business & Document Intelligence")
+st.divider()
+st.markdown("""
+### Turn raw files into analytical insights
+
+Upload a CSV or PDF, ask a question, and generate a structured AI-powered report using a local language model.
+""")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.info("📈 CSV Analysis\n\nAnalyze datasets, trneds, missing values, and business risks.")
+
+with col2:
+    st.info("📄 PDF Intelligence\n\nSummarize documents and ask questions about report content.")
+
+with col3:
+    st.info("💾 Download Reports\n\nExport analyst outputs as text files")
 
 # Sidebar for input
 with st.sidebar:
-    st.header("Controls")
-
+    st.header("📂 Controls")
+    st.caption("Configure your analysis")
+    st.divider()
     uploaded_file = st.file_uploader(
         "Upload a CSV or PDF",
         type = ["csv", "pdf"]
@@ -24,6 +42,9 @@ with st.sidebar:
             "Ask a question about the data",
             placeholder = "Example: what stands out in this dataset?"
     )
+    st.divider()
+    st.markdown("### 🤖 model")
+    st.info(MODEL)
 
 # Main area
 if uploaded_file is not None:
@@ -32,7 +53,8 @@ if uploaded_file is not None:
     if uploaded_file.name.endswith(".csv"):
         df = pd.read_csv(uploaded_file)
 
-        st.success("CSV uploaded successfully")
+        st.success("✅ CSV uploaded successfully")
+        st.caption(f"File: {uploaded_file.name}")
         st.subheader("CSV Preview")
         st.dataframe(df.head())
 
@@ -61,7 +83,8 @@ if uploaded_file is not None:
 
     elif uploaded_file.name.endswith(".pdf"):
 
-        st.success("PDF uploaded successfully")
+        st.success("✅ PDF uploaded successfully")
+        st.caption(f"File: {uploaded_file.name}")
 
         pdf_text = extract_pdf_text(uploaded_file)
 
