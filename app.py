@@ -50,36 +50,54 @@ with st.sidebar:
 if uploaded_file is not None:
     #st.success(f"Uploaded: {uploaded_file.name}")
 
+    # ------------------
+    # CSV
+    # ------------------
+
     if uploaded_file.name.endswith(".csv"):
         df = pd.read_csv(uploaded_file)
 
         st.success("✅ CSV uploaded successfully")
         st.caption(f"File: {uploaded_file.name}")
-        st.subheader("CSV Preview")
-        st.dataframe(df.head())
 
-        if st.button("Generate Analyst Brief"):
-            with st.spinner("Analyze data..."):
-                
-                question = (
-                    user_question 
-                    if user_question 
-                    else "What stands out in this dataset?"
+        left_col, right_col = st.columns([1, 1])
+
+        with left_col:
+
+            st.subheader("CSV Preview")
+            st.dataframe(df.head(3))
+
+        with right_col:
+
+            st.subheader("🤖 Analysis")
+
+            if st.button("Generate Analyst Brief"):
+                with st.spinner("Analyze data..."):
+                    
+                    question = (
+                        user_question 
+                        if user_question 
+                        else "What stands out in this dataset?"
+                    )
+
+                    brief = analyze_text(df, question)
+
+                st.subheader("Analysis Brief")
+
+                with st.container(border= True):
+                    st.markdown(brief)
+                #st.write(brief)
+
+                st.download_button(
+                    label = "Download Analysis Brief",
+                    data = brief,
+                    file_name = "analystai_brief.txt",
+                    mime = "text/plain"
                 )
 
-                brief = analyze_text(df, question)
-
-            st.subheader("Analysis Brief")
-            st.write(brief)
-
-            st.download_button(
-                label = "Download Analysis Brief",
-                data = brief,
-                file_name = "analystai_brief.txt",
-                mime = "text/plain"
-            )
-
-    # Keep all CSV code above here
+    # --------------------
+    # PDF Area
+    #---------------------
 
     elif uploaded_file.name.endswith(".pdf"):
 
