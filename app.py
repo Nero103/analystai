@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from ai_engine import analyze_text, analyze_pdf
+from ai_engine import analyze_text, analyze_pdf, format_report
 from document_utils import extract_pdf_text
 from config import MODEL, PDF_LIMIT
 
@@ -85,7 +85,7 @@ if uploaded_file is not None:
                 st.subheader("Analysis Brief")
 
                 with st.container(border= True):
-                    st.markdown(brief)
+                    st.markdown(format_report(brief))
                 #st.write(brief)
 
                 st.download_button(
@@ -103,36 +103,47 @@ if uploaded_file is not None:
 
         st.success("✅ PDF uploaded successfully")
         st.caption(f"File: {uploaded_file.name}")
+        
 
         pdf_text = extract_pdf_text(uploaded_file)
 
-        st.subheader("PDF Preview")
-        st.text(pdf_text[:2000])
+        left_col, right_col = st.columns([1, 1])
 
-        pdf_question = st.text_input(
-            "Ask a question about this PDF",
-            placeholder ="Example: What are the key findings?"
-        )
+        with left_col:
+            st.subheader("PDF Preview")
+            st.text(pdf_text[:2000])
 
-        if st.button("Generate PDF Analysis"):
-            with st.spinner("Analyzing PDF..."):
-                question = (
-                    pdf_question
-                    if pdf_question 
-                    else "Summarize the key points in this PDF."
-                )
+        with right_col:
 
-                pdf_brief = analyze_pdf(pdf_text, question)
+            st.subheader("🤖 Analysis")
 
-            st.subheader("PDF Analysis")
-            st.write(pdf_brief)
-
-            st.download_button(
-                label = "Download PDF Analysis",
-                data = pdf_brief,
-                file_name = "analystai_pdf_analysis.txt",
-                mime = "text/plain"
+            pdf_question = st.text_input(
+                "Ask a question about this PDF",
+                placeholder ="Example: What are the key findings?"
             )
+
+            if st.button("Generate PDF Analysis"):
+                with st.spinner("Analyzing PDF..."):
+                    question = (
+                        pdf_question
+                        if pdf_question 
+                        else "Summarize the key points in this PDF."
+                    )
+
+                    pdf_brief = analyze_pdf(pdf_text, question)
+
+                st.subheader("PDF Analysis")
+
+                with st.container(border= True):
+                    st.markdown(format_report(pdf_brief))
+                # st.write(pdf_brief)
+
+                st.download_button(
+                    label = "Download PDF Analysis",
+                    data = pdf_brief,
+                    file_name = "analystai_pdf_analysis.txt",
+                    mime = "text/plain"
+                )
 
 else:
     st.info("Upload csv or pdf file to begin analysis.")

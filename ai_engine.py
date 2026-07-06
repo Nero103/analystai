@@ -109,3 +109,37 @@ def analyze_pdf(pdf_text, question):
 
     except Exception as e:
         return f"PDF analysis failed. Error: {e}"
+
+# ----------------------
+# Report Formatting
+#-----------------------
+
+def format_report(report):
+
+    report = report.replace(
+        "1. Executive Answer",
+        "## Executive Answer"
+    )
+
+    report = report.replace(
+        "2. Key Insights",
+        "## Key Insights"
+    )
+
+    report = report.replace(
+        "3. Data Evidence",
+        "## Data Evidence"
+    )
+
+    report = report.replace(
+        "4. Risks / Concerns",
+        "## Risks / Concerns"
+    )
+
+    report = report.replace(
+        "5. Recommeded Next Steps",
+        "## Recommended Next Steps"
+    )
+    
+    return report
+
