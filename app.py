@@ -69,7 +69,9 @@ if uploaded_file is not None:
 
         with right_col:
 
-            st.subheader("🤖 Analysis")
+            st.subheader("🤖 AI Workspace")
+
+            analysis_placeholder = st.empty()
 
             if st.button("Generate Analyst Brief"):
                 with st.spinner("Analyze data..."):
@@ -84,9 +86,23 @@ if uploaded_file is not None:
 
                 st.subheader("Analysis Brief")
 
-                with st.container(border= True):
-                    st.markdown(format_report(brief))
-                #st.write(brief)
+                st.success("✅ Analysis Complete")
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    st.metric("File Type", "CSV")
+
+                with col2:
+                    st.metric("AI Model", MODEL)
+
+                with col3:
+                    st.metric("Status", "Complete")
+
+                with analysis_placeholder.container():
+
+                    with st.container(border= True):
+                        st.markdown(format_report(brief))
 
                 st.download_button(
                     label = "Download Analysis Brief",
@@ -110,17 +126,19 @@ if uploaded_file is not None:
         left_col, right_col = st.columns([1, 1])
 
         with left_col:
-            st.subheader("PDF Preview")
+            st.subheader("📄 PDF Preview")
             st.text(pdf_text[:2000])
-
-        with right_col:
-
-            st.subheader("🤖 Analysis")
 
             pdf_question = st.text_input(
                 "Ask a question about this PDF",
                 placeholder ="Example: What are the key findings?"
             )
+
+        with right_col:
+
+            st.subheader("🤖 AI Workspace")
+
+            analysis_placeholder = st.empty()
 
             if st.button("Generate PDF Analysis"):
                 with st.spinner("Analyzing PDF..."):
@@ -132,11 +150,23 @@ if uploaded_file is not None:
 
                     pdf_brief = analyze_pdf(pdf_text, question)
 
-                st.subheader("PDF Analysis")
+                st.success("✅ Analysis Complete")
 
-                with st.container(border= True):
-                    st.markdown(format_report(pdf_brief))
-                # st.write(pdf_brief)
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    st.metric("File Type", "PDF")
+
+                with col2:
+                    st.metric("AI Model", MODEL)
+
+                with col3:
+                    st.metric("Status", "Complete")    
+
+                with analysis_placeholder.container():    
+                    
+                    with st.container(border= True):
+                        st.markdown(format_report(pdf_brief))
 
                 st.download_button(
                     label = "Download PDF Analysis",
@@ -147,6 +177,16 @@ if uploaded_file is not None:
 
 else:
     st.info("Upload csv or pdf file to begin analysis.")
+
+    st.markdown("""
+    ### What AnalystAI can do:
+    - Analyze CSV datasets
+    - Summarize PDF documents
+    - Answer natural language questions
+    - Generate analyst-style reports
+    - Download results as text files
+    - Run locally using Ollama
+    """)
 
 
 
