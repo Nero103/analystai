@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import time
 from ai_engine import analyze_text, analyze_pdf, format_report
 from document_utils import extract_pdf_text
 from config import MODEL, PDF_LIMIT
@@ -8,25 +9,27 @@ from config import MODEL, PDF_LIMIT
 # UI
 # ------------------
 
-st.title("📊 AnalystAI")
+st.title("⬢ Moros AnalystAI")
+st.markdown("## Transform Data into Decsions")
 st.caption("AI-Powered Business & Document Intelligence")
 st.divider()
-st.markdown("""
-### Turn raw files into analytical insights
 
-Upload a CSV or PDF, ask a question, and generate a structured AI-powered report using a local language model.
+st.markdown("""
+Upload a **CSV** or **PDF**, ask a question in plain English, and receive a structured, executive insights by a local AI.
+
+**Built for analysts, business, and decision-making.**
 """)
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.info("📈 CSV Analysis\n\nAnalyze datasets, trneds, missing values, and business risks.")
+    st.info("📈 Buiness Inteligence\n\nAnalyze CSV datasets to uncover trends, anomalies, and business insights.")
 
 with col2:
-    st.info("📄 PDF Intelligence\n\nSummarize documents and ask questions about report content.")
+    st.info("📄 Document Intelligence\n\nSummarize PDF reports and ask questions using local AI.")
 
 with col3:
-    st.info("💾 Download Reports\n\nExport analyst outputs as text files")
+    st.info("💾 Executive Reporting\n\nGenerate structured reports that can be downloaded and shared")
 
 # Sidebar for input
 with st.sidebar:
@@ -75,6 +78,7 @@ if uploaded_file is not None:
 
             if st.button("Generate Analyst Brief"):
                 with st.spinner("Analyze data..."):
+                    start_time = time.perf_counter()
                     
                     question = (
                         user_question 
@@ -84,19 +88,27 @@ if uploaded_file is not None:
 
                     brief = analyze_text(df, question)
 
+                    processing_time = time.perf_counter() - start_time
+
                 st.subheader("Analysis Brief")
 
                 st.success("✅ Analysis Complete")
 
-                col1, col2, col3 = st.columns(3)
+                sumcol1, sumcol2, sumcol3, sumcol4, sumcol5 = st.columns(5)
 
-                with col1:
+                with sumcol1:
                     st.metric("File Type", "CSV")
 
-                with col2:
+                with sumcol2:
+                    st.metric("Rows", len(df))
+
+                with sumcol3:
                     st.metric("AI Model", MODEL)
 
-                with col3:
+                with sumcol4:
+                    st.metric("Time", f"{processing_time:.1f}s")
+
+                with sumcol5:
                     st.metric("Status", "Complete")
 
                 with analysis_placeholder.container():
@@ -142,6 +154,8 @@ if uploaded_file is not None:
 
             if st.button("Generate PDF Analysis"):
                 with st.spinner("Analyzing PDF..."):
+                    start_time = time.perf_counter()
+
                     question = (
                         pdf_question
                         if pdf_question 
@@ -150,17 +164,25 @@ if uploaded_file is not None:
 
                     pdf_brief = analyze_pdf(pdf_text, question)
 
+                    processing_time = time.perf_counter() - start_time
+
                 st.success("✅ Analysis Complete")
 
-                col1, col2, col3 = st.columns(3)
+                sumcol1, sumcol2, sumcol3, sumcol4, sumcol5 = st.columns(5)
 
-                with col1:
+                with sumcol1:
                     st.metric("File Type", "PDF")
 
-                with col2:
+                with sumcol2:
+                    st.metric("Characters", len(pdf_text))
+
+                with sumcol3:
                     st.metric("AI Model", MODEL)
 
-                with col3:
+                with sumcol4:
+                    st.metric("Time", f"{processing_time:.1f}s")
+
+                with sumcol5:
                     st.metric("Status", "Complete")    
 
                 with analysis_placeholder.container():    
@@ -188,5 +210,13 @@ else:
     - Run locally using Ollama
     """)
 
+# ----------------
+# Footer
+# ----------------
+
+st.divider()
+st.caption(
+    "⬢ Moros AnalystAI v3.0  •  Powered by Python, Streamlit, Pandas, and Ollama  •  Local AI Processing"
+)
 
 
