@@ -5,6 +5,13 @@ from ai_engine import analyze_text, analyze_pdf, format_report
 from document_utils import extract_pdf_text
 from config import MODEL, PDF_LIMIT
 
+st.set_page_config(
+    page_title="AnalystAI",
+    page_icon="⬢",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # ------------------
 # UI
 # ------------------
@@ -23,33 +30,75 @@ Upload a **CSV** or **PDF**, ask a question in plain English, and receive a stru
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.info("📈 Buiness Inteligence\n\nAnalyze CSV datasets to uncover trends, anomalies, and business insights.")
+    with st.container(border= True):
+        st.markdown("""
+        ### 📈 Business Inteligence\n\nAnalyze CSV datasets to uncover trends, anomalies, and business insights.
+        
+    Best for:
+    - Sales reports
+    - Financial data
+    - Operational metrics
+        """)
 
 with col2:
-    st.info("📄 Document Intelligence\n\nSummarize PDF reports and ask questions using local AI.")
+    with st.container(border= True):
+        st.markdown("""
+        ### 📄 Document Intelligence\n\nSummarize PDF reports and ask questions using local AI.
+        
+    Best for:
+    - Business reports
+    - Research reports
+    - Documentation
+        """)
 
 with col3:
-    st.info("💾 Executive Reporting\n\nGenerate structured reports that can be downloaded and shared")
+    with st.container(border= True):
+        st.markdown("""
+        ### 💾 Executive Reporting\n\nGenerate structured reports that can be downloaded and shared.
+        
+    Outputs:
+    - Excutive summary
+    - Key findings
+    - Recommendations
+        """)
 
+# --------------------
 # Sidebar for input
+# --------------------
+
 with st.sidebar:
-    st.header("📂 Controls")
+    st.title("⬢ Control Center")
     st.caption("Configure your analysis")
+
     st.divider()
+
+    st.markdown("### 📂 Upload")
     uploaded_file = st.file_uploader(
         "Upload a CSV or PDF",
         type = ["csv", "pdf"]
     )
 
+    st.divider()
+
+    st.markdown("### ❓ Analysis Question")
     user_question = st.text_input(
             "Ask a question about the data",
             placeholder = "Example: what stands out in this dataset?"
     )
+
     st.divider()
+
     st.markdown("### 🤖 model")
     st.info(MODEL)
 
+    st.divider()
+
+    st.caption("⬢ Moros AnalystAI v3.0")
+
+# -----------------
 # Main area
+# -----------------
+
 if uploaded_file is not None:
     #st.success(f"Uploaded: {uploaded_file.name}")
 
@@ -62,6 +111,8 @@ if uploaded_file is not None:
 
         st.success("✅ CSV uploaded successfully")
         st.caption(f"File: {uploaded_file.name}")
+
+        st.divider()
 
         left_col, right_col = st.columns([1, 1])
 
@@ -113,6 +164,8 @@ if uploaded_file is not None:
 
                 with analysis_placeholder.container():
 
+                    st.markdown("### 📋 Executive Analysis Report")
+
                     with st.container(border= True):
                         st.markdown(format_report(brief))
 
@@ -135,16 +188,18 @@ if uploaded_file is not None:
 
         pdf_text = extract_pdf_text(uploaded_file)
 
+        st.divider()
+
         left_col, right_col = st.columns([1, 1])
 
         with left_col:
             st.subheader("📄 PDF Preview")
             st.text(pdf_text[:2000])
 
-            pdf_question = st.text_input(
-                "Ask a question about this PDF",
-                placeholder ="Example: What are the key findings?"
-            )
+            #pdf_question = st.text_input(
+            #    "Ask a question about this PDF",
+            #    placeholder ="Example: What are the key findings?"
+            #)
 
         with right_col:
 
@@ -157,8 +212,8 @@ if uploaded_file is not None:
                     start_time = time.perf_counter()
 
                     question = (
-                        pdf_question
-                        if pdf_question 
+                        user_question
+                        if user_question 
                         else "Summarize the key points in this PDF."
                     )
 
@@ -185,7 +240,9 @@ if uploaded_file is not None:
                 with sumcol5:
                     st.metric("Status", "Complete")    
 
-                with analysis_placeholder.container():    
+                with analysis_placeholder.container():
+
+                    st.markdown("### 📋 Executive Analysis Report")    
                     
                     with st.container(border= True):
                         st.markdown(format_report(pdf_brief))
@@ -201,7 +258,7 @@ else:
     st.info("Upload csv or pdf file to begin analysis.")
 
     st.markdown("""
-    ### What AnalystAI can do:
+    ### What Moros AnalystAI can do:
     - Analyze CSV datasets
     - Summarize PDF documents
     - Answer natural language questions
