@@ -13,12 +13,16 @@ def analyze_text(df, question):
     Your job is to analyze datasets and produce execuitve-level summaries.
 
     RULES:
-    - Be precise and data-driven
-    - Do NOT guess missing information
-    - Focus on patterns, anomalies, and explanations
-    - Prioritize business impact over statistics
-    - Write clear for executives (non-technical audience)
-    - Do NOT sound stuffy
+    - Strictly use ONLY the uploaded dataset
+    - Strictly never invnt facts, values, trends, or conclusions.
+    - If the data cannot answer the question, clearly state that.
+    - Distinguish observed facts from interpretations.
+    - Every interpretation must strictly be supported by evidence from the dataset.
+    - Keep explanation concise and executuve-friendly.
+    - Strctly do not exaggerate certainty.
+    - For every major conclusion, strictly identify the supporting column, value, statistic, or sample row.
+    - Strictly do not claim causation unless the dataset directly supports it.
+    - Strictly label unsupported possibilities as hypotheses, not facts.
 
     DATASET:
 
@@ -48,19 +52,21 @@ def analyze_text(df, question):
     1. Executive Answer (direct response to question)
     2. Key Insights (bullet points)
     3. Data Evidence (what supports your answer)
-    4. Risks / Concerns
-    5. Recommended Next Actions
+        - Supporting columns:
+        - Supporting values/statistics:
+        - Relevant sample rows, if available
+    4. Confidence
+        - Level: High / Medium / Low
+        - Reason:
+    5. Risks / Concerns
+    6. Recommended Next Actions
     """
 
     try:
         response = ollama.chat(
             model = MODEL,
-            messages = [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+            messages = [{"role": "user", "content": prompt}],
+            options = {"temperature": 0.2}
         )
 
         return response["message"]["content"]
@@ -79,11 +85,16 @@ def analyze_pdf(pdf_text, question):
     Analyze the PDF content below and answer the user's questions.
 
     RULES:
-    - Use only the PDF content provided
-    - Do not invent facts
-    - If PDF does not contain enough information, say so
-    - Focus on key ideas, risks, findings, useful takeaways
-    - Write clearly for a non-technical audience
+    - Strictly use ONLY the uploaded PDF.
+    - Strictly never invent facts.
+    - If the answer cannot be determined from the document, explicitly say so.
+    - Separate observed facts from interpretations.
+    - Every conclusion must strictly reference evidence from the document.
+    - Keep explanations concise and executive-friendly.
+    - Strictly do not exaggerate certainty.
+    - For every major conclusion, strictly quote or closely paraphrase the supporting passage.
+    - Strictly identify the page number when page information is available.
+    - Strictly do not treat interpretation as a directly stated fact.
 
     PDF CONTENT:
     {pdf_text[:8000]}
@@ -93,16 +104,22 @@ def analyze_pdf(pdf_text, question):
 
     OUTPUT:
     1. Executive Summary
-    2. Direct Answer
+    2. Evidence
+        - Supporting passage:
+        - Page number, if available:
     3. Key Findings
-    4. Risks / Concerns
-    5. Recommeneded Next Actions
+    4. Confidence
+        - Level: High / Medium / Low
+        - Reason:
+    5. Risks / Concerns
+    6. Recommeneded Next Actions
     """
 
     try:
         response = ollama.chat(
             model = MODEL,
-            messages = [{"role": "user", "content": prompt}]
+            messages = [{"role": "user", "content": prompt}],
+            options = {"temperature": 0.2}
         )
 
         return response["message"]["content"]
@@ -115,31 +132,19 @@ def analyze_pdf(pdf_text, question):
 #-----------------------
 
 def format_report(report):
+    heading_replacements = {
+        "1. Executive Answer": "## Executive Answer",
+        "1. Executive Summary": "## Executive Summary",
+        "2. Evidence": "## Evidence",
+        "3. Confidence": "## Confidence",
+        "4. Key Insights": "## Key Insights",
+        "4. Key Findings": "## Key Findings",
+        "5. Risks / Concerns": "## Risks / Concerns",
+        "6. Recommended Next Actions": "## Recommended Next Actions"
+    }
 
-    report = report.replace(
-        "1. Executive Answer",
-        "## Executive Answer"
-    )
-
-    report = report.replace(
-        "2. Key Insights",
-        "## Key Insights"
-    )
-
-    report = report.replace(
-        "3. Data Evidence",
-        "## Data Evidence"
-    )
-
-    report = report.replace(
-        "4. Risks / Concerns",
-        "## Risks / Concerns"
-    )
-
-    report = report.replace(
-        "5. Recommeded Next Steps",
-        "## Recommended Next Steps"
-    )
+    for old_heading, new_heading in heading_replacements.items():
+        report = report.replace(old_heading, new_heading)
     
     return report
 
